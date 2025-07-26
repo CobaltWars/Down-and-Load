@@ -178,3 +178,46 @@ saveSettingsBtn.addEventListener('click', async () => {
 document.addEventListener('DOMContentLoaded', () => {
     loadSettings();
 });
+
+// Système de mise à jour
+const updateNotification = document.createElement('div')
+updateNotification.id = 'updateNotification'
+updateNotification.style.cssText = 'display:none; padding:10px; margin-top:20px; background:#f0f0f0; border-radius:4px;'
+updateNotification.innerHTML = `
+  <p id="updateMessage"></p>
+  <button id="downloadUpdateBtn" style="display:none; margin-right:10px;">Télécharger la mise à jour</button>
+  <button id="installUpdateBtn" style="display:none;">Redémarrer et installer</button>
+`
+document.getElementById('main').appendChild(updateNotification)
+
+const updateMessage = document.getElementById('updateMessage')
+const downloadUpdateBtn = document.getElementById('downloadUpdateBtn')
+const installUpdateBtn = document.getElementById('installUpdateBtn')
+
+window.electronAPI.onUpdateAvailable(() => {
+  updateNotification.style.display = 'block'
+  updateMessage.textContent = 'Une nouvelle version est disponible !'
+  downloadUpdateBtn.style.display = 'inline-block'
+})
+
+window.electronAPI.onUpdateDownloaded(() => {
+  updateNotification.style.display = 'block'
+  updateMessage.textContent = 'Mise à jour téléchargée. Prête à installer.'
+  installUpdateBtn.style.display = 'inline-block'
+  downloadUpdateBtn.style.display = 'none'
+})
+
+window.electronAPI.onUpdateError((event, error) => {
+  updateNotification.style.display = 'block'
+  updateMessage.textContent = `Erreur de mise à jour: ${error}`
+})
+
+downloadUpdateBtn.addEventListener('click', () => {
+  window.electronAPI.startDownloadUpdate()
+  downloadUpdateBtn.disabled = true
+  updateMessage.textContent = 'Téléchargement en cours...'
+})
+
+installUpdateBtn.addEventListener('click', () => {
+  window.electronAPI.installUpdate()
+})

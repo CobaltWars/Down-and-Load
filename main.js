@@ -1,5 +1,5 @@
-// Dépendances
 const { app, BrowserWindow, ipcMain } = require('electron')
+const { autoUpdater } = require("electron-updater")
 const path = require('path')
 const fs = require('fs')
 const os = require('os')
@@ -9,6 +9,8 @@ const { initYouTubeDownload } = require('./youtube_download')
 const configPath = process.platform === 'win32' 
   ? path.join(os.homedir(), 'AppData', 'Local', 'yt-downloader', 'config.json')
   : path.join(os.homedir(), '.config', 'yt-downloader', 'config.json')
+
+let mainWindow
 
 // Fonction pour charger la configuration
 function loadConfig() {
@@ -21,7 +23,6 @@ function loadConfig() {
     console.error('Erreur lors du chargement de la configuration:', error)
   }
   
-  // Configuration par défaut
   return {
     downloadPath: path.join(os.homedir(), 'Downloads')
   }
@@ -40,11 +41,10 @@ function saveConfig(config) {
   }
 }
 
-// Charger la configuration au démarrage
 let config = loadConfig()
 
 const createWindow = () => {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -53,14 +53,18 @@ const createWindow = () => {
       enableRemoteModule: false,
     }
   })
-  win.loadFile('index.html')
+  mainWindow.loadFile('index.html')
 }
 
 app.whenReady().then(() => {
   createWindow()
   
-  // Initialiser le module YouTube Download
   initYouTubeDownload(ipcMain, () => config)
+  
+  // Configuration de l'auto-update
+  autoUpdater.autoDownload = false
+  autoUpdater.autoInstallOnAppQuit = true
+  autoUpdater.checkForUpdatesAndNotify()
   
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
@@ -73,27 +77,31 @@ app.on('window-all-closed', () => {
 
 // Événements de mise à jour
 autoUpdater.on('update-available', () => {
-  mainWindow.webContents.send('update_available');
-});
+  mainWindow.webContents.send('update_available')
+})
 
 autoUpdater.on('update-downloaded', () => {
-  mainWindow.webContents.send('update_downloaded');
-});
+  mainWindow.webContents.send('update_downloaded')
+})
+
+autoUpdater.on('error', (error) => {
+  mainWindow.webContents.send('update_error', error.message)
+})
 
 // Gestion des actions utilisateur via IPC
 ipcMain.on('start-download', () => {
-  autoUpdater.downloadUpdate();
-});
+  autoUpdater.downloadUpdate()
+})
 
 ipcMain.on('install-update', () => {
-  autoUpdater.quitAndInstall();
-});
+  autoUpdater.quitAndInstall()
+})
 
 // Gestionnaire IPC pour ouvrir dossier source
 ipcMain.on('open-download-folder', () => {
-    const { shell } = require('electron');
-    shell.openPath(config.downloadPath);
-});
+  const { shell } = require('electron')
+  shell.openPath(config.downloadPath)
+})
 
 // Gestionnaires IPC pour la configuration
 ipcMain.handle('get-config', () => {
