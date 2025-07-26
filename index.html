@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="youtube_download.css">
+</head>
+<body>
+    <!-- Barre latérale -->
+    <div class="sidebar">
+        <div class="sidebar-icon active" onclick="showSection('main', event)">
+            <img src="ressource/youtube.png">
+        </div>
+        <div class="sidebar-icon" onclick="showSection('settings', event)">
+            <img src="ressource/setting.png">
+        </div>
+    </div>
+  
+    <!-- Contenu principal -->
+    <div class="content">
+        <!-- Section Principale -->
+        <div id="main" class="section active">
+            <h1>YouTube Downloader</h1>
+            <input class="url_bar" type="text" id="urlInput" placeholder="Url YouTube..." autofocus>
+            <button class="download_button" id="downloadBtn">Télécharger</button>
+            <button id="cleanBtn">Nettoyer</button>
+            <br>
+            <div id="info"></div>
+            <div id="downloadList"></div>
+        </div>
+      
+        <!-- Section Paramètres -->
+        <div id="settings" class="section">
+            <h1>Paramètres</h1>
+            <label for="downloadPath">Emplacement par défaut des téléchargements :</label>
+            <input class="downloadpath" type="text" id="downloadPath" >
+            <button class="selectfolderbtn" id="selectFolderBtn">Parcourir</button>
+            <button class="savesettingsbtn" id="saveSettingsBtn">Sauvegarder</button>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>

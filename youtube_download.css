@@ -1,0 +1,144 @@
+/*Menu YouTube*/
+
+/*URLS bar, download and clean button*/
+.url_bar {
+    padding: 8px 16px;
+    width: 300px;
+    background-color: #6c757d7c;
+    border: none;
+    outline-color: #6c757d7c;
+    border-radius: 4px;
+    transition: 0.5s;
+}
+
+.url_bar:focus {
+    outline-color: #6c757d;
+}
+
+.url_bar:not(:focus) {
+    border-color: #6c757d7c;
+}
+
+.download_button {
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.download_button :hover {
+    background-color: #5a6268;
+}
+
+#cleanBtn {
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#cleanBtn:hover {
+    background-color: #5a6268;
+}
+
+/*Item*/
+#downloadList {
+        margin-top: 20px;
+        text-align: center;
+        max-width: 600px;
+    }
+    .download-item {
+        display: flex;
+        text-align: left;
+        padding: 10px;
+        margin: 5px 0;
+        background: white;
+        border-radius: 5px;
+    }
+    .thumbnail-container {
+        margin-right: 10px;
+    }
+    .thumbnail {
+        width: 120px;
+        height: 90px;
+        object-fit: cover;
+    }
+    .details {
+        flex: 1;
+    }
+    .title {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .progress-container {
+        width: 100%;
+        background-color: #e0e0e0;
+        border-radius: 4px;
+        margin: 5px 0;
+    }
+    .progress-bar {
+        height: 10px;
+        background-color: #4caf50;
+        border-radius: 4px;
+        width: 0%;
+    }
+    .status {
+        margin-top: 5px;
+        font-size: 0.9em;
+    }
+    
+    .stopped-text {
+        color: #666;
+        font-size: 0.8em;
+        font-style: italic;
+    }
+
+/*Menu paramêtre*/
+
+.downloadpath {
+    padding: 8px 16px;
+    background-color: #6c757d7c;
+    border: none;
+    outline-color: #6c757d7c;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.downloadpath:focus {
+    outline-color: #6c757d;
+}
+
+.downloadpath:not(:focus) {
+    outline-color: #6c757d7c;
+}
+
+.selectfolderbtn {
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.selectfolderbtn:hover {
+    background-color: #5a6268;
+}
+
+.savesettingsbtn {
+    padding: 8px 16px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.savesettingsbtn:hover {
+    background-color: #5a6268;
+}
