@@ -21,7 +21,7 @@
     "publish": [{
       "provider": "github",
       "owner": "CobaltWars",
-      "repo": "https://github.com/CobaltWars/Down-and-Load"
+      "repo": "Down-and-Load"
     }]
   },
   "devDependencies": {
