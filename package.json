@@ -9,8 +9,10 @@
   },
   "build": {
     "appId": "com.cobaltwars.down-and-load",
+    "productName": "Down&Load",
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "icon.ico"
     },
     "mac": {
       "target": "dmg"
