@@ -12,7 +12,7 @@
     "productName": "Down&Load",
     "win": {
       "target": "nsis",
-      "icon": "icon.ico"
+      "icon": "ressource/icon.ico"
     },
     "mac": {
       "target": "dmg"
