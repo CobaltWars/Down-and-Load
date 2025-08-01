@@ -4,7 +4,16 @@ const { ensureDir } = require('fs-extra');
 const path = require('path');
 const fs = require('fs');
 
-const ytdlp = new YtDlp();
+const ytdlp = new YtDlp({
+    binaryPath: path.join(
+        process.resourcesPath,
+        'app.asar.unpacked',
+        'node_modules',
+        'ytdlp-nodejs',
+        'bin',
+        'yt-dlp.exe'
+    )
+});
 const downloadQueue = new PQueue({ concurrency: 3 });
 const activeDownloads = new Map();
 
