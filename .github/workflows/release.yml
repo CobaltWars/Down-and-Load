@@ -1,0 +1,42 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Déclenché quand un tag comme v1.0.0 est poussé
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Clé pour la publication
+
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.ref_name }}  # Utilise le tag (ex: v1.0.1)
+        name: Down&Load v${{ github.ref_name }}
+        files: |
+          dist/*.exe
+          dist/*.AppImage
+          dist/latest.yml  # Fichier de mise à jour automatique
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
