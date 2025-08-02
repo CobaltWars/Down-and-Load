@@ -2,8 +2,7 @@ name: Build and Release
 
 on:
   push:
-    tags:
-      - 'v*'  # Déclenché quand un tag comme v1.0.0 est poussé
+    branches: [ main ]
 
 jobs:
   build:
@@ -19,6 +18,11 @@ jobs:
       with:
         node-version: 18
 
+    - name: Extract version from package.json
+      id: package-version
+      run: |
+        echo "PACKAGE_VERSION=$(node -p "require('./package.json').version")" >> $GITHUB_ENV
+
     - name: Install dependencies
       run: npm install
 
@@ -30,8 +34,8 @@ jobs:
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v${{ github.ref_name }}  # Utilise le tag (ex: v1.0.1)
-        name: Down&Load v${{ github.ref_name }}
+        tag_name: v${{ env.PACKAGE_VERSION }}  # Utilise la version du package.json
+        name: Down&Load v${{ env.PACKAGE_VERSION }}
         files: |
           dist/*.exe
           dist/*.AppImage
