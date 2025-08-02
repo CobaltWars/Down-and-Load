@@ -12,10 +12,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
-    - uses: actions/checkout@latest
+    - uses: actions/checkout@v4
 
     - name: Setup Node
-      uses: actions/setup-node@latest
+      uses: actions/setup-node@v3
       with:
         node-version: 18
 
@@ -33,7 +33,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Clé pour la publication
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@latest
+      uses: actions/upload-artifact@v4
       with:
         name: dist-${{ matrix.os }}
         path: dist/
@@ -42,10 +42,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@latest
+    - uses: actions/checkout@v4
 
     - name: Setup Node
-      uses: actions/setup-node@latest
+      uses: actions/setup-node@v3
       with:
         node-version: 18
 
@@ -55,7 +55,7 @@ jobs:
         echo "PACKAGE_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
 
     - name: Download all artifacts
-      uses: actions/download-artifact@latest
+      uses: actions/download-artifact@v4
       with:
         path: artifacts
 
@@ -63,7 +63,7 @@ jobs:
       run: ls -R artifacts
 
     - name: Create Release
-      uses: softprops/action-gh-release@latest
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ env.PACKAGE_VERSION }}
         name: Down&Load v${{ env.PACKAGE_VERSION }}
@@ -75,4 +75,3 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
