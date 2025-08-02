@@ -1,0 +1,78 @@
+name: Build and Release
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@latest
+
+    - name: Setup Node
+      uses: actions/setup-node@latest
+      with:
+        node-version: 18
+
+    - name: Extract version from package.json
+      id: package-version
+      run: |
+        echo "PACKAGE_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build
+      run: npm run build
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Clé pour la publication
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@latest
+      with:
+        name: dist-${{ matrix.os }}
+        path: dist/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@latest
+
+    - name: Setup Node
+      uses: actions/setup-node@latest
+      with:
+        node-version: 18
+
+    - name: Extract version from package.json
+      id: package-version
+      run: |
+        echo "PACKAGE_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_ENV
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@latest
+      with:
+        path: artifacts
+
+    - name: List downloaded artifacts (for debugging)
+      run: ls -R artifacts
+
+    - name: Create Release
+      uses: softprops/action-gh-release@latest
+      with:
+        tag_name: v${{ env.PACKAGE_VERSION }}
+        name: Down&Load v${{ env.PACKAGE_VERSION }}
+        files: |
+          artifacts/dist-windows-latest/*.exe
+          artifacts/dist-ubuntu-latest/*.AppImage
+          artifacts/dist-windows-latest/latest.yml
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
