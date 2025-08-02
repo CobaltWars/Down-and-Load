@@ -2,7 +2,8 @@ name: Build and Release
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - 'v*'  # Déclenché quand un tag comme v1.0.0 est poussé
 
 jobs:
   build:
@@ -10,7 +11,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
-      fail-fast: false
 
     steps:
     - uses: actions/checkout@v4
@@ -30,34 +30,18 @@ jobs:
     - name: Build
       run: npm run build
       env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}  # Clé pour la publication
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: build-${{ matrix.os }}
-        path: dist/
-
-  create-release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v3
-      with:
-        path: artifacts
-
-    - name: Create Release
+    - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: v${{ env.PACKAGE_VERSION }}
+        tag_name: v${{ env.PACKAGE_VERSION }}  # Utilise la version du package.json
         name: Down&Load v${{ env.PACKAGE_VERSION }}
-        body: "Release for Windows and Linux"
         files: |
-          artifacts/build-windows-latest/*.exe
-          artifacts/build-ubuntu-latest/*.AppImage
-          artifacts/build-ubuntu-latest/latest.yml
+          dist/*.exe
+          dist/*.AppImage
+          dist/latest.yml  # Fichier de mise à jour automatique
         draft: false
         prerelease: false
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
