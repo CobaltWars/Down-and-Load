@@ -2,7 +2,8 @@ name: Build and Release
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - 'v*'  # Déclenché quand un tag comme v1.0.0 est poussé
 
 jobs:
   build:
